@@ -36,7 +36,7 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         super.viewDidLoad()
       
     textFieldTop.text = "TOP"
-    textFieldBottom.text = "BOTTOM"
+    textFieldBottom.text = "BOTTOM "
     textFieldTop.delegate = self
     textFieldBottom.delegate = self
         
