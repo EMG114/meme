@@ -35,8 +35,6 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     override func viewDidLoad() {
         super.viewDidLoad()
       
-    textFieldTop.text = "TOP"
-    textFieldBottom.text = "BOTTOM "
     textFieldTop.delegate = self
     textFieldBottom.delegate = self
         
@@ -45,6 +43,9 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     textFieldBottom.defaultTextAttributes = memeTextAttributes
     textFieldTop.textAlignment = NSTextAlignment.center
     textFieldBottom.textAlignment = NSTextAlignment.center
+        
+    prepareTextField(textField: textFieldTop, defaultText:"TOP")
+    prepareTextField(textField: textFieldBottom, defaultText:"BOTTOM")
         
     }
     
@@ -64,9 +65,18 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         unsubscribeFromKeyboardNotifications()
     }
     
+    func prepareTextField(textField: UITextField, defaultText: String) {
+        
+        textFieldTop.text = "TOP"
+        textFieldBottom.text = "BOTTOM "
+        
+      
+        
+    }
+    
     @objc func keyboardWillShow(_ notification:Notification) {
         
-        view.frame.origin.y = 0 - getKeyboardHeight(notification)
+        view.frame.origin.y = -getKeyboardHeight(notification)
     }
     
     @objc func keyboardWillHide(_ notification:Notification) {
@@ -94,34 +104,21 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
           NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
     }
     
-    @IBAction func pickAnImage(_ sender: Any) {
+    
+    
+    
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [String : Any]){
         
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        imagePicker.sourceType = .photoLibrary
-        self.present(imagePicker, animated: true, completion: nil)
-       
-    }
-    
-    
-    @IBAction func pickAnImageFromCamera(_ sender: Any) {
+        if let image = info[ UIImagePickerControllerOriginalImage] as? UIImage {
+            
+            
+            imagePickerView.image = image
+            shareActionButton.isEnabled = true
+            
+            dismiss(animated: true, completion: nil)
+        }
         
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        imagePicker.sourceType = .camera
-        present(imagePicker, animated: true, completion: nil)
-    }
-    
-  func imagePickerController(_ picker: UIImagePickerController,
-                                        didFinishPickingMediaWithInfo info: [String : Any]){
-    
-    if let image = info[ UIImagePickerControllerOriginalImage] as? UIImage {
-        imagePickerView.image = image
-        shareActionButton.isEnabled = true
-       
-        dismiss(animated: true, completion: nil)
-    }
-    
     }
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
@@ -129,6 +126,7 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         
         
     }
+    
     
     
     func save(memedImage: UIImage) {
@@ -166,8 +164,8 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
                 self.dismiss(animated: true, completion: nil)
             }
         }
-       
-       
+        
+        
         
     }
     
@@ -177,11 +175,35 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         imagePickerView.image = nil
         textFieldTop.text = "TOP"
         textFieldBottom.text = "BOTTOM"
- 
+        
     }
     
     
+    func pick(sourceType: UIImagePickerControllerSourceType){
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        self.present(imagePicker, animated: true, completion: nil)
+    }
+    
+    
+    
+    @IBAction func pickAnImage(_ sender: Any) {
+        
+       pick(sourceType: .photoLibrary)
+            
+        }
+
+       
+    @IBAction func pickAnImageFromCamera(_ sender: Any) {
+        
+         pick(sourceType: .camera)
+    }
 }
+
+
+    
+    
+
 
 extension MemeViewController: UITextFieldDelegate {
     
