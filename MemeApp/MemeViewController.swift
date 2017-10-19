@@ -30,19 +30,11 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
       
     textFieldTop.delegate = self
     textFieldBottom.delegate = self
-        
-   
-    textFieldTop.defaultTextAttributes = memeTextAttributes
-    textFieldBottom.defaultTextAttributes = memeTextAttributes
-    textFieldTop.textAlignment = NSTextAlignment.center
-    textFieldBottom.textAlignment = NSTextAlignment.center
         
     prepareTextField(textField: textFieldTop, defaultText:"TOP")
     prepareTextField(textField: textFieldBottom, defaultText:"BOTTOM")
@@ -55,10 +47,8 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         
         subscribeToKeyboardNotifications()
         cameraButton.isEnabled = false
-       
-
+   
     }
-    
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -66,19 +56,26 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     }
     
     func prepareTextField(textField: UITextField, defaultText: String) {
-        
+       
         textFieldTop.text = "TOP"
         textFieldBottom.text = "BOTTOM "
         
-      
+        textFieldTop.defaultTextAttributes = memeTextAttributes
+        textFieldBottom.defaultTextAttributes = memeTextAttributes
+        textFieldTop.textAlignment = NSTextAlignment.center
+        textFieldBottom.textAlignment = NSTextAlignment.center
+        
         
     }
     
     @objc func keyboardWillShow(_ notification:Notification) {
+        if textFieldBottom.isEditing {
         
         view.frame.origin.y = -getKeyboardHeight(notification)
     }
-    
+        
+    }
+        
     @objc func keyboardWillHide(_ notification:Notification) {
         view.frame.origin.y = 0
     }
@@ -104,9 +101,6 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
           NotificationCenter.default.removeObserver(self, name: .UIKeyboardWillHide, object: nil)
     }
     
-    
-    
-    
     func imagePickerController(_ picker: UIImagePickerController,
                                didFinishPickingMediaWithInfo info: [String : Any]){
         
@@ -124,10 +118,7 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true, completion: nil)
         
-        
     }
-    
-    
     
     func save(memedImage: UIImage) {
         // Create the meme
@@ -152,6 +143,7 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         
         return memedImage
     }
+    
     @IBAction func shareMemeButton(_ sender: Any) {
         let newMemeImage = self.generateMemedImage()
         let memeActivityController = UIActivityViewController.init(activityItems: [newMemeImage], applicationActivities: nil)
@@ -165,19 +157,19 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
             }
         }
         
-        
-        
     }
     
     @IBAction func cancelButtonBar(_ sender: Any) {
         
         shareActionButton.isEnabled = false
         imagePickerView.image = nil
-        textFieldTop.text = "TOP"
-        textFieldBottom.text = "BOTTOM"
+//        textFieldTop.text = "TOP"
+//        textFieldBottom.text = "BOTTOM"
+        
+        prepareTextField(textField: textFieldTop, defaultText: "TOP")
+        prepareTextField(textField: textFieldTop, defaultText: "BOTTOM")
         
     }
-    
     
     func pick(sourceType: UIImagePickerControllerSourceType){
         let imagePicker = UIImagePickerController()
@@ -185,24 +177,17 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         self.present(imagePicker, animated: true, completion: nil)
     }
     
-    
-    
     @IBAction func pickAnImage(_ sender: Any) {
         
        pick(sourceType: .photoLibrary)
             
         }
 
-       
     @IBAction func pickAnImageFromCamera(_ sender: Any) {
         
          pick(sourceType: .camera)
     }
 }
-
-
-    
-    
 
 
 extension MemeViewController: UITextFieldDelegate {
@@ -223,9 +208,7 @@ extension MemeViewController: UITextFieldDelegate {
         return true
     }
     
-
-            
-    }
+}
     
     
 
