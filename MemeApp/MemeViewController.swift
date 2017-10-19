@@ -163,9 +163,6 @@ class MemeViewController: UIViewController, UIImagePickerControllerDelegate, UIN
         
         shareActionButton.isEnabled = false
         imagePickerView.image = nil
-//        textFieldTop.text = "TOP"
-//        textFieldBottom.text = "BOTTOM"
-        
         prepareTextField(textField: textFieldTop, defaultText: "TOP")
         prepareTextField(textField: textFieldTop, defaultText: "BOTTOM")
         
